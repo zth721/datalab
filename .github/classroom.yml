@@ -1,0 +1,30 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-22.04
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: datalab test
+      id: datalab-test
+      uses: panjd123/autograding-command-grader@v1
+      with:
+        test-name: datalab test
+        setup-command: make
+        command: python3 test.py
+        timeout: 10
+        max-score: 100
+    - name: Autograding Reporter
+      uses: panjd123/autograding-grading-reporter@v1
+      env:
+        DATALAB-TEST_RESULTS: "${{steps.datalab-test.outputs.result}}"
+      with:
+        runners: datalab-test

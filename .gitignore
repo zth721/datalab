@@ -1,0 +1,6 @@
+.vscode
+ishow
+fshow
+btest
+
+# TODO: 把二进制文件加到 gitignore 里，我编译不出来，我就先不加了，不知道有什么
