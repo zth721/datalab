@@ -8,13 +8,12 @@
 | --------- | ------------- | ------------- | ------------- | ----------------- |-----------|
 | 0.00         | 0.00             | 0.00             | 0.00             | 0.00 |···  |
 
-<!-- 保留两位小数，四舍五入 -->
 
-Autograder 截图：
+test 截图：
 
-![](./imgs/autograder.png)
+![image](https://github.com/user-attachments/assets/ce3d3a69-ac27-46c4-b073-44577ec7dbbb)
 
-<!-- 请同时将 Github Action 中的 csim test 和 gemm test 展开，截图 -->
+
 
 ## Part A: cache 模拟器 实现简述
 
