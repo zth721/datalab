@@ -29,10 +29,10 @@ jobs:
       uses: panjd123/autograding-command-grader@v1
       with:
         test-name: datalab test
-        setup-command: make && . venv/bin/activate
+        setup-command: . venv/bin/activate
         command: python test.py
         timeout: 10
-        max-score: 100
+        max-score: 34
     - name: Autograding Reporter
       uses: panjd123/autograding-grading-reporter@v1
       env:
