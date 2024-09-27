@@ -1,21 +1,3 @@
-/*
- * CS:APP Data Lab
- *
- * btest.c - A test harness that checks a student's solution in bits.c
- *           for correctness.
- *
- * Copyright (c) 2001-2011, R. Bryant and D. O'Hallaron, All rights
- * reserved.  May not be used, modified, or copied without permission.
- *
- * This is an improved version of btest that tests large windows
- * around zero and tmin and tmax for integer puzzles, and zero, norm,
- * and denorm boundaries for floating point puzzles.
- *
- * Note: not 64-bit safe. Always compile with gcc -m32 option.
- */
-
-// TODO: 这个代码这么长吗，为什么我的 IDE 全是报错
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -286,11 +268,11 @@ static int test_3_arg(funct_t f, funct_t ft, int arg1, int arg2, int arg3, char*
  * test_function - Test a function.  Return number of errors
  */
 static int test_function(test_ptr t) {
-    int test_counts[3];    /* number of test values for each arg */
-    int args = t->args;    /* number of function arguments */
-    int arg_test_range[3]; /* test range for each argument */
+    int test_counts[3];          /* number of test values for each arg */
+    int args = t->args;          /* number of function arguments */
+    int arg_test_range[3] = {0}; /* test range for each argument */
     int i, a1, a2, a3;
-    int errors = 0;
+    int errors __attribute__((unused)) = 0;
 
     /* These are the test values for each arg. Declared with the
        static attribute so that the array will be allocated in bss
@@ -505,7 +487,7 @@ static void usage(char* cmd) {
  **************/
 
 int main(int argc, char* argv[]) {
-    int errors;
+    [[maybe_unused]] int errors;
     char c;
 
     /* parse command line args */

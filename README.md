@@ -3,17 +3,32 @@
 ## 项目编译与环境指南
 
 本实验要求环境安装好 `gcc`, `make` 和 `python3`。
+
+C 语言编译环境
+
+```bash
+sudo apt-get update
+sudo apt-get install build-essential
+sudo apt-get install gcc-multilib
 ```
-sudo apt-get update #更新 安装指令
-sudo apt-get install build-essential #配置gcc、make
-sudo apt-get install gcc-multilib #配置32位兼容库
-```
-python3:要求下载pycparser包，以方便test分析。其中产生的相关pip问题请根据系统提示进行安装或者更新
-```
+
+Python 编译环境，我们演示 Virtualenv 下的配置方法，如果你使用 Conda 可以自行配置类似的环境出来
+
+```bash
+sudo apt-get update
+sudo apt-get install python3 python3-pip python3-venv
+python3 -m venv venv
+source venv/bin/activate
 pip install pycparser -i  https://mirrors.aliyun.com/pypi/simple/
 ```
 
-<!-- TODO: 到底要安装哪些，在哪个系统上做过测试？ -->
+如果你想获得 VSCode 的最佳代码提示体验，请指定 `cStandard` 为 `gnu99`:
+
+```json
+{
+    "C_Cpp.default.cStandard": "gnu99"
+}
+```
 
 ### 如何编译
 
@@ -60,61 +75,45 @@ int bitAnd(int x, int y) {
 - 禁止使用控制流语句，比如 `if`, `else`, `for`, `while`，除非题目允许
 - 禁止使用函数，或调用任何函数
 - 禁止使用宏
-- 禁止使用非位运算符号，比如 `&&`, `||`, `-`, `?:`,`!`, `>` 除非题目允许。需要注意，当题目允许使用if、else的时候，“==”的出现是合法的，而剩下的逻辑运算符需要看题目要求
+- 禁止使用非位运算符号，比如 `&&`, `||`, `-`, `?:`,`!`, `>`, `==` 除非题目允许
 - 禁止定义其他类型的变量，比如 `float`，`char`，结构体，数组，联合体等
 - 禁止使用类型转换，比如 `(float)x` 和 `(int)(1.0f)`
 - 禁止使用任何浮点常量，比如 `1.0f`，当然你可以使用它的二进制形式代表的整数，注意不要违反上一条规则
-
-<!-- TODO: 允许创建 unsigned 的变量吗，你考虑了吗，原 lab 里是禁止的 -->
+- 禁止使用 Undefined Behavior，比如对一个 32 位数逻辑右移超过 31 位，你应该假设我们的机器会在这时候返回不确定的结果，不得利用 Undefined Behavior，以免我们跨平台编译的时候结果不一致
 
 其他事项：
 
-- 符号数计数不包括等号 `=`与`==`。
+- 符号数计数不包括等号 `=`。
 
 ### 如何评测
 
-```
+```bash
+source venv/bin/activate
 python3 test.py
 ```
 
 我们提供了一个 `test.py` 脚本，当你完成实验时可以在你自己机器上直接运行该指令。如果出现最大操作数、合规性错误会直接显示错误信息到屏幕上，而正确性信息则会被记录在 `result.txt` 文件中。
-需要注意，只有当你bits.c文件编译没有问题（即不存在语法问题）时，test.py才会显示你答题的相关信息
-
+需要注意，只有当你 `bits.c` 文件编译没有问题（即不存在语法问题）时，`test.py` 才会显示你答题的相关信息
 
 ### 如何使用我们提供的工具
 
 #### btest
 
-<!-- TODO: -->
-```
-make clean #清除之前的可执行文件
-make #进行编译
-./btest #显示出哪些题目在正确性上出现问题
-./btest -h #查看./btest的其他功能
+```bash
+./btest -h # 查看 btest 的其他功能
 ```
 
 #### ishow
-使用例子
-<!-- TODO: -->
-```
-make clean
-make
+
+```bash
 ./ishow 0x27
-```
-此时你会发现显示出
-```
 Hex = 0x00000027,	Signed = 39,	Unsigned = 39
 ```
+
 #### fshow
-使用例子
-<!-- TODO: -->
-```
-make clean
-make
+
+```bash
 ./fshow 0x15213243
-```
-此时你会发现显示出
-```
 Floating point value 3.255334057e-26
 Bit Representation 0x15213243, sign = 0, exponent = 0x2a, fraction = 0x213243
 Normalized.  +1.2593463659 X 2^(-85)
@@ -137,5 +136,3 @@ DataLab 本次设置为通过性实验，即测试点通过则为满分。
 1. 不允许抄袭，助教会将每个人代码同网上代码和其他同学代码进行查重
 2. 报告需要写清楚做题思路，否则会酌情扣分
 3. 慎用代码格式化工具，如果一定要使用，请用 .clang-format 文件
-
-<!-- TODO: 我们统一一下代码格式化的格式，用 .clang-format 里的，如果你不知道怎么用，你就把自动格式化关了 -->

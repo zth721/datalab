@@ -105,20 +105,19 @@ int test_logicalShift(int x, int n) {
     unsigned shifted = u >> n;
     return (int)shifted;
 }
-unsigned test_reverse(unsigned v) { 
-    static const unsigned char BitReverseTable256[256] = 
-   {
-   #   define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
-   #   define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
-   #   define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
-      R6(0), R6(2), R6(1), R6(3)
-   };
-   unsigned int c; 
-   c = (BitReverseTable256[v & 0xff] << 24) | 
-      (BitReverseTable256[(v >> 8) & 0xff] << 16) | 
-      (BitReverseTable256[(v >> 16) & 0xff] << 8) |
-      (BitReverseTable256[(v >> 24) & 0xff]);
-   return c;
+unsigned test_reverse(unsigned v) {
+    static const unsigned char BitReverseTable256[256] =
+        {
+#define R2(n) n, n + 2 * 64, n + 1 * 64, n + 3 * 64
+#define R4(n) R2(n), R2(n + 2 * 16), R2(n + 1 * 16), R2(n + 3 * 16)
+#define R6(n) R4(n), R4(n + 2 * 4), R4(n + 1 * 4), R4(n + 3 * 4)
+            R6(0), R6(2), R6(1), R6(3)};
+    unsigned int c;
+    c = (BitReverseTable256[v & 0xff] << 24) |
+        (BitReverseTable256[(v >> 8) & 0xff] << 16) |
+        (BitReverseTable256[(v >> 16) & 0xff] << 8) |
+        (BitReverseTable256[(v >> 24) & 0xff]);
+    return c;
 }
 unsigned test_float_i2f(int x) {
     float f = (float)x;

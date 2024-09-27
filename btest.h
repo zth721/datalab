@@ -1,8 +1,3 @@
-/*
- * CS:APP Data Lab
- */
-
-/* Declare different function types */
 typedef int (*funct_t)(void);
 typedef int (*funct1_t)(int);
 typedef int (*funct2_t)(int, int);
