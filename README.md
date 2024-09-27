@@ -2,8 +2,6 @@
 
 ## 项目编译与环境指南
 
-本实验要求环境安装好 `gcc`, `make` 和 `python3`。
-
 C 语言编译环境
 
 ```bash
@@ -12,14 +10,20 @@ sudo apt-get install build-essential
 sudo apt-get install gcc-multilib
 ```
 
+如果有 C 语言环境问题，你可以选择删除 `gcc` 和 `g++` 然后重新执行上述指令
+
+```bash
+sudo apt-get remove gcc g++
+```
+
 Python 编译环境，我们演示 Virtualenv 下的配置方法，如果你使用 Conda 可以自行配置类似的环境出来
 
 ```bash
 sudo apt-get update
 sudo apt-get install python3 python3-pip python3-venv
 python3 -m venv venv
-source venv/bin/activate
-pip install pycparser -i  https://mirrors.aliyun.com/pypi/simple/
+. venv/bin/activate
+pip install pycparser -i https://mirrors.aliyun.com/pypi/simple/
 ```
 
 如果你想获得 VSCode 的最佳代码提示体验，请指定 `cStandard` 为 `gnu99`:
@@ -29,6 +33,8 @@ pip install pycparser -i  https://mirrors.aliyun.com/pypi/simple/
     "C_Cpp.default.cStandard": "gnu99"
 }
 ```
+
+> 我们还为高级用户提供了一个 `Dockerfile`
 
 ### 如何编译
 
@@ -73,23 +79,26 @@ int bitAnd(int x, int y) {
 你被禁止：
 
 - 禁止使用控制流语句，比如 `if`, `else`, `for`, `while`，除非题目允许
+- 禁止使用非位运算符号，比如 `&&`, `||`, `-`, `?:`,`!`, `>`, `==` 除非题目允许
+- 禁止使用其他不在 `Legal ops` 中的操作符
+- 禁止超过 `Max ops` 个符号数
 - 禁止使用函数，或调用任何函数
 - 禁止使用宏
-- 禁止使用非位运算符号，比如 `&&`, `||`, `-`, `?:`,`!`, `>`, `==` 除非题目允许
 - 禁止定义其他类型的变量，比如 `float`，`char`，结构体，数组，联合体等
 - 禁止使用类型转换，比如 `(float)x` 和 `(int)(1.0f)`
 - 禁止使用任何浮点常量，比如 `1.0f`，当然你可以使用它的二进制形式代表的整数，注意不要违反上一条规则
 - 禁止使用 Undefined Behavior，比如对一个 32 位数逻辑右移超过 31 位，你应该假设我们的机器会在这时候返回不确定的结果，不得利用 Undefined Behavior，以免我们跨平台编译的时候结果不一致
-- 我们要求你的编译不能有任何警告，在迫不得已的情况下，请用一些编译器指令来消除警告
+- 我们要求你的编译不能有任何警告，在迫不得已的情况下，请尽量用一些代码内编译器指令来消除警告，比如 `__attribute__((unused))`
+- 禁止修改除了 `bits.c` 以外的文件
 
 其他事项：
 
-- 符号数计数不包括等号 `=`。
+- 符号数计数不包括赋值等号 `=`
 
 ### 如何评测
 
 ```bash
-source venv/bin/activate
+. venv/bin/activate
 python3 test.py
 ```
 
@@ -100,7 +109,12 @@ python3 test.py
 
 #### btest
 
+`btest` 是正确性检验工具，是 `test.py` 脚本的一部分，你可以根据需要单独使用它以方便调试。
+
+比如以指定参数调用某个函数测试。
+
 ```bash
+./btest -1 1 -2 2 -f bitXor # bitXor(1, 2)
 ./btest -h # 查看 btest 的其他功能
 ```
 
@@ -136,4 +150,4 @@ DataLab 本次设置为通过性实验，即测试点通过则为满分。
 
 1. 不允许抄袭，助教会将每个人代码同网上代码和其他同学代码进行查重
 2. 报告需要写清楚做题思路，否则会酌情扣分
-3. 慎用代码格式化工具，如果一定要使用，请用 .clang-format 文件
+3. 慎用代码格式化工具，如果一定要使用，请用 [`.clang-format`](./.clang-format) 文件，如果因格式化工具导致 `bits.c` 外的文件被修改，可能会被视为作弊

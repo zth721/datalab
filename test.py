@@ -53,6 +53,7 @@ class FunctionAnalyzer(c_ast.NodeVisitor):
             self.has_array = True
         self.check_type(node.type)
         self.generic_visit(node)
+
     def visit_Cast(self, node):
         # 收集类型转换
         self.type_conversions.append((node.to_type, node.expr))
@@ -68,7 +69,6 @@ class FunctionAnalyzer(c_ast.NodeVisitor):
             self.check_type(node.type)
 
 
-
 class FunctionFinder(c_ast.NodeVisitor):
     def __init__(self, target_func_name):
         self.target_func_name = target_func_name
@@ -82,41 +82,54 @@ class FunctionFinder(c_ast.NodeVisitor):
 
 
 true_ans = {
-    "bitXor": {"rating": 1, "score": 0, "operation": ["~", "&","int"], "maxop": 7},
+    "bitXor": {"rating": 1, "score": 0, "operation": ["~", "&", "int"], "maxop": 7},
     "samesign": {
         "rating": 2,
         "score": 0,
-        "operation": [">>", "<<", "!", "^", "&&", "if", "else", "&","int"],
+        "operation": [">>", "<<", "!", "^", "&&", "if", "else", "&", "int"],
         "maxop": 12,
     },
     "logtwo": {
         "rating": 4,
         "score": 0,
-        "operation": [">", "<", ">>", "<<", "|","int"],
+        "operation": [">", "<", ">>", "<<", "|", "int"],
         "maxop": 25,
     },
     "byteSwap": {
         "rating": 4,
         "score": 0,
-        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>","int"],
+        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>", "int"],
         "maxop": 17,
     },
     "reverse": {
         "rating": 3,
         "score": 0,
-        "operation": ["<<", "|", "&", "-", "+", ">>", "for", "while", "!", "~","unsigned","int"],
+        "operation": [
+            "<<",
+            "|",
+            "&",
+            "-",
+            "+",
+            ">>",
+            "for",
+            "while",
+            "!",
+            "~",
+            "unsigned",
+            "int",
+        ],
         "maxop": 30,
     },
     "logicalShift": {
         "rating": 3,
         "score": 0,
-        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>","int"],
+        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>", "int"],
         "maxop": 20,
     },
     "leftBitCount": {
         "rating": 4,
         "score": 0,
-        "operation": ["!", "~", "&", "^", "|", "+", ">>", "<<","int"],
+        "operation": ["!", "~", "&", "^", "|", "+", ">>", "<<", "int"],
         "maxop": 50,
     },
     "float_i2f": {
@@ -139,7 +152,7 @@ true_ans = {
             "!",
             "==",
             "unsigned",
-            "int"
+            "int",
         ],
         "maxop": 30,
     },
@@ -162,7 +175,7 @@ true_ans = {
             "+",
             "==",
             "int",
-            "unsigned"
+            "unsigned",
         ],
         "maxop": 30,
     },
@@ -185,7 +198,7 @@ true_ans = {
             "if",
             "else",
             "int",
-            "unsigned"
+            "unsigned",
         ],
         "maxop": 60,
     },
@@ -209,7 +222,7 @@ true_ans = {
             "else",
             "&&",
             "int",
-            "unsigned"
+            "unsigned",
         ],
         "maxop": 30,
     },
@@ -243,7 +256,7 @@ def test_score(function, real_ans):
         flag_operation = 1
         illegal = []
         for i in operators:
-            if i !="==":
+            if i != "==":
                 i = i.replace("=", "")
             if i not in true_ans[function_name]["operation"]:
                 flag_operation = 0
@@ -258,24 +271,26 @@ def test_score(function, real_ans):
                 flag_operation = 0
                 break
         if flag_operation == 0:
-            print(f"Has Illegal operation:{illegal}!,name:{function_name},point:{0}")
+            print(
+                f"Has Illegal operation: {illegal}! name: {function_name}, point: {0}"
+            )
             if real_ans[function_name] != 0:
                 real_ans["Total"] -= true_ans[function_name]["rating"]
         else:
             if len(operators) > true_ans[function_name]["maxop"]:
                 print(
-                    f"Exceed maxops,your ops are {len(operators)},we want {true_ans[function_name]['maxop']},name:{function_name},point:{0}"
+                    f"Exceed maxops, your ops are {len(operators)} > max ops {true_ans[function_name]['maxop']}, name:{function_name}, point:{0}"
                 )
                 if real_ans[function_name] != 0:
                     real_ans["Total"] -= true_ans[function_name]["rating"]
             else:
                 if real_ans[function_name] == 0:
                     print(
-                        f"Please look at result.txt,you have some errors.name:{function_name},point:{0}"
+                        f"Please look at result.txt, you have some errors. name: {function_name}, point: {0}"
                     )
                 else:
                     print(
-                        f"Great!!! name:{function_name},point:{real_ans[function_name]}"
+                        f"Pass, great!!! name: {function_name}, point: {real_ans[function_name]}"
                     )
 
 
