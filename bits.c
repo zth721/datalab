@@ -56,15 +56,14 @@ int byteSwap(int x, int n, int m) {
 
 /*
  * reverse - Reverse the bit order of a 32-bit unsigned integer.
- *   Example: reverse(0xFFFF0000) = 0x0000FFFF // TODO: 换个，或者加个例子，这个例子看起来是以 16 进制的 4 个 bit 为单位转的
+ *   Example: reverse(0xFFFF0000) = 0x0000FFFF reverse(0x80000000)=0x1 reverse(0xA0000000)=0x5
  *   Note: You may assume that an unsigned integer is 32 bits long.
- *   Legal ops: << | & - + >> for while ! ~ (You can define unsigned in this function) // TODO: 我写成允许了
+ *   Legal ops: << | & - + >> for while ! ~ (You can define unsigned in this function) 
  *   Max ops: 30
  *   Difficulty: 3
  */
 unsigned reverse(unsigned v) {
     return 2;
-    // TODO: 你的 test 文件里好像把答案直接干出来了，你能不能给 test 换一个写法，比如转成数组，再倒过来写进去
 }
 
 /*
