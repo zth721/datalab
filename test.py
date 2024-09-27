@@ -14,6 +14,7 @@ class FunctionAnalyzer(c_ast.NodeVisitor):
         self.control_structures = []
         self.has_array = False
         self.function_name = None
+        self.type_conversions = []
 
     def visit_FuncDef(self, node):
         self.function_name = node.decl.name
@@ -50,7 +51,22 @@ class FunctionAnalyzer(c_ast.NodeVisitor):
     def visit_Decl(self, node):
         if isinstance(node.type, c_ast.ArrayDecl):
             self.has_array = True
+        self.check_type(node.type)
         self.generic_visit(node)
+    def visit_Cast(self, node):
+        # 收集类型转换
+        self.type_conversions.append((node.to_type, node.expr))
+        self.generic_visit(node)
+
+    def check_type(self, node):
+        if isinstance(node, c_ast.TypeDecl):
+            type_name = node.type.names[0]
+            self.control_structures.append(type_name)
+        elif isinstance(node, (c_ast.PtrDecl, c_ast.ArrayDecl)):
+            self.check_type(node.type)
+        elif isinstance(node, c_ast.FuncDecl):
+            self.check_type(node.type)
+
 
 
 class FunctionFinder(c_ast.NodeVisitor):
@@ -66,41 +82,41 @@ class FunctionFinder(c_ast.NodeVisitor):
 
 
 true_ans = {
-    "bitXor": {"rating": 1, "score": 0, "operation": ["~", "&"], "maxop": 7},
+    "bitXor": {"rating": 1, "score": 0, "operation": ["~", "&","int"], "maxop": 7},
     "samesign": {
         "rating": 2,
         "score": 0,
-        "operation": [">>", "<<", "!", "^", "&&", "if", "else", "&"],
+        "operation": [">>", "<<", "!", "^", "&&", "if", "else", "&","int"],
         "maxop": 12,
     },
     "logtwo": {
         "rating": 4,
         "score": 0,
-        "operation": [">", "<", ">>", "<<", "|"],
+        "operation": [">", "<", ">>", "<<", "|","int"],
         "maxop": 25,
     },
     "byteSwap": {
         "rating": 4,
         "score": 0,
-        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>"],
+        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>","int"],
         "maxop": 17,
     },
     "reverse": {
         "rating": 3,
         "score": 0,
-        "operation": ["<<", "|", "&", "-", "+", ">>", "for", "while", "!", "~"],
+        "operation": ["<<", "|", "&", "-", "+", ">>", "for", "while", "!", "~","unsigned","int"],
         "maxop": 30,
     },
     "logicalShift": {
         "rating": 3,
         "score": 0,
-        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>"],
+        "operation": ["!", "~", "&", "^", "|", "+", "<<", ">>","int"],
         "maxop": 20,
     },
     "leftBitCount": {
         "rating": 4,
         "score": 0,
-        "operation": ["!", "~", "&", "^", "|", "+", ">>", "<<"],
+        "operation": ["!", "~", "&", "^", "|", "+", ">>", "<<","int"],
         "maxop": 50,
     },
     "float_i2f": {
@@ -121,6 +137,9 @@ true_ans = {
             "<",
             ">",
             "!",
+            "==",
+            "unsigned",
+            "int"
         ],
         "maxop": 30,
     },
@@ -141,6 +160,9 @@ true_ans = {
             "~",
             "else",
             "+",
+            "==",
+            "int",
+            "unsigned"
         ],
         "maxop": 30,
     },
@@ -162,6 +184,8 @@ true_ans = {
             "<=",
             "if",
             "else",
+            "int",
+            "unsigned"
         ],
         "maxop": 60,
     },
@@ -184,6 +208,8 @@ true_ans = {
             "if",
             "else",
             "&&",
+            "int",
+            "unsigned"
         ],
         "maxop": 30,
     },
@@ -198,7 +224,7 @@ def test_score(function, real_ans):
         pass
     analyzer = finder.analyzer
     function_name = analyzer.function_name
-    operators_temp = [i for i in analyzer.operators if i != "=" and i != "=="]
+    operators_temp = [i for i in analyzer.operators if i != "="]
     operators = []
     for i in operators_temp:
         if "--" in i:
@@ -217,7 +243,8 @@ def test_score(function, real_ans):
         flag_operation = 1
         illegal = []
         for i in operators:
-            i = i.replace("=", "")
+            if i !="==":
+                i = i.replace("=", "")
             if i not in true_ans[function_name]["operation"]:
                 flag_operation = 0
                 illegal.append(i)
