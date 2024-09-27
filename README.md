@@ -8,6 +8,10 @@ sudo apt-get update #更新 安装指令
 sudo apt-get install build-essential #配置gcc、make
 sudo apt-get install gcc-multilib #配置32位兼容库
 ```
+python3 要求下载pycparser包，以方便test分析
+```
+pip install pycparser -i  https://mirrors.aliyun.com/pypi/simple/
+```
 
 <!-- TODO: 到底要安装哪些，在哪个系统上做过测试？ -->
 
