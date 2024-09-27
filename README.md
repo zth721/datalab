@@ -3,6 +3,11 @@
 ## 项目编译与环境指南
 
 本实验要求环境安装好 `gcc`, `make` 和 `python3`。
+```
+sudo apt-get update #更新 安装指令
+sudo apt-get install build-essential #配置gcc、make
+sudo apt-get install gcc-multilib #配置32位兼容库
+```
 
 <!-- TODO: 到底要安装哪些，在哪个系统上做过测试？ -->
 
@@ -75,14 +80,38 @@ python test.py
 #### btest
 
 <!-- TODO: -->
-
-#### fshow
-
-<!-- TODO: -->
+```
+make clean #清除之前的可执行文件
+make #进行编译
+./btest #显示出哪些题目在正确性上出现问题
+```
 
 #### ishow
-
+使用例子
 <!-- TODO: -->
+```
+make clean
+make
+./ishow 0x27
+```
+此时你会发现显示出
+```
+Hex = 0x00000027,	Signed = 39,	Unsigned = 39
+```
+#### fshow
+使用例子
+<!-- TODO: -->
+```
+make clean
+make
+./fshow 0x15213243
+```
+此时你会发现显示出
+```
+Floating point value 3.255334057e-26
+Bit Representation 0x15213243, sign = 0, exponent = 0x2a, fraction = 0x213243
+Normalized.  +1.2593463659 X 2^(-85)
+```
 
 ### 最终得分
 
