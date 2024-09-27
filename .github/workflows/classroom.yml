@@ -13,13 +13,24 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Setup
+      run: |
+        apt-get update
+        apt-get install -y build-essential \
+            gcc-multilib
+        apt-get install -y python3 \
+            python3-pip \
+            python3-venv
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install pycparser
     - name: datalab test
       id: datalab-test
       uses: panjd123/autograding-command-grader@v1
       with:
         test-name: datalab test
         setup-command: make
-        command: python3 test.py
+        command: python test.py
         timeout: 10
         max-score: 100
     - name: Autograding Reporter
