@@ -1,4 +1,9 @@
 /*
+Please Note that:
+1. you can define any numbers you need;
+2. if you need to use "++"/"--",we will see it as "+"/"-"
+*/
+/*
  * bitXor - x ^ y using only ~ and &
  *   Example: bitXor(4, 5) = 1
  *   Legal ops: ~ &
