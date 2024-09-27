@@ -8,7 +8,7 @@ sudo apt-get update #更新 安装指令
 sudo apt-get install build-essential #配置gcc、make
 sudo apt-get install gcc-multilib #配置32位兼容库
 ```
-python3 要求下载pycparser包，以方便test分析
+python3:要求下载pycparser包，以方便test分析。其中产生的相关pip问题请根据系统提示进行安装或者更新
 ```
 pip install pycparser -i  https://mirrors.aliyun.com/pypi/simple/
 ```
@@ -74,10 +74,12 @@ int bitAnd(int x, int y) {
 ### 如何评测
 
 ```
-python test.py
+python3 test.py
 ```
 
 我们提供了一个 `test.py` 脚本，当你完成实验时可以在你自己机器上直接运行该指令。如果出现最大操作数、合规性错误会直接显示错误信息到屏幕上，而正确性信息则会被记录在 `result.txt` 文件中。
+需要注意，只有当你bits.c文件编译没有问题（即不存在语法问题）时，test.py才会显示你答题的相关信息
+
 
 ### 如何使用我们提供的工具
 
