@@ -84,6 +84,7 @@ python test.py
 make clean #清除之前的可执行文件
 make #进行编译
 ./btest #显示出哪些题目在正确性上出现问题
+./btest -h #查看./btest的其他功能
 ```
 
 #### ishow
