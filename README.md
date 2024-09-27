@@ -1,5 +1,17 @@
 # DataLab
 
+```
+ ________  ________  _________  ________  ___       ________  ________     
+|\   ___ \|\   __  \|\___   ___\\   __  \|\  \     |\   __  \|\   __  \    
+\ \  \_|\ \ \  \|\  \|___ \  \_\ \  \|\  \ \  \    \ \  \|\  \ \  \|\ /_   
+ \ \  \ \\ \ \   __  \   \ \  \ \ \   __  \ \  \    \ \   __  \ \   __  \  
+  \ \  \_\\ \ \  \ \  \   \ \  \ \ \  \ \  \ \  \____\ \  \ \  \ \  \|\  \ 
+   \ \_______\ \__\ \__\   \ \__\ \ \__\ \__\ \_______\ \__\ \__\ \_______\
+    \|_______|\|__|\|__|    \|__|  \|__|\|__|\|_______|\|__|\|__|\|_______|
+```
+
+RUC DataLab
+
 ## 项目编译与环境指南
 
 C 语言编译环境
@@ -10,21 +22,27 @@ sudo apt-get install build-essential
 sudo apt-get install gcc-multilib
 ```
 
-如果有 C 语言环境问题，你可以选择删除 `gcc` 和 `g++` 然后重新执行上述指令
+如果有 C 语言环境问题，你可以选择删除 `gcc` 和 `g++` 然后重新执行上述指令。
 
 ```bash
 sudo apt-get remove gcc g++
 ```
+
+如果仍有问题，可以访问 https://ics.ruc.panjd.net 获取服务器登陆信息，在服务器上完成本实验。
+
+--------
 
 Python 编译环境，我们演示 Virtualenv 下的配置方法，如果你使用 Conda 可以自行配置类似的环境出来
 
 ```bash
 sudo apt-get update
 sudo apt-get install python3 python3-pip python3-venv
-python3 -m venv venv
+python3 -m venv venv # 如果你在我们提供的服务器上进行本实验，这一步请从这里开始
 . venv/bin/activate
 pip install pycparser -i https://mirrors.aliyun.com/pypi/simple/
 ```
+
+--------
 
 如果你想获得 VSCode 的最佳代码提示体验，请指定 `cStandard` 为 `gnu99`:
 
@@ -34,7 +52,7 @@ pip install pycparser -i https://mirrors.aliyun.com/pypi/simple/
 }
 ```
 
-> 我们还为高级用户提供了一个 `Dockerfile`
+> 面向高级用户，我们还提供了 devcontainer 的支持。有需要的同学可以自行使用。
 
 ### 如何编译
 
@@ -66,8 +84,8 @@ int bitAnd(int x, int y) {
 如在 `bitAnd` 题目中，你需要修改代码，使得：
 
 1. 保证函数的返回值符合要求
-2. 保证只使用了 Legal ops 中给出的符号
-3. 符号数的总数不能超过 Max ops
+2. 保证只使用了 `Legal ops` 中给出的符号
+3. 符号数的总数不能超过 `Max ops`
 
 ### 具体要求
 
@@ -93,7 +111,7 @@ int bitAnd(int x, int y) {
 
 其他事项：
 
-- 符号数计数不包括赋值等号 `=`
+- 符号数计数不包括赋值等号 `=` 和控制流语句如 `if`
 
 ### 如何评测
 
@@ -103,7 +121,7 @@ python3 test.py
 ```
 
 我们提供了一个 `test.py` 脚本，当你完成实验时可以在你自己机器上直接运行该指令。如果出现最大操作数、合规性错误会直接显示错误信息到屏幕上，而正确性信息则会被记录在 `result.txt` 文件中。
-需要注意，只有当你 `bits.c` 文件编译没有问题（即不存在语法问题）时，`test.py` 才会显示你答题的相关信息
+需要注意，只有当你 `bits.c` 文件编译没有问题（即不存在语法问题）时，`test.py` 才会显示你答题的相关信息。
 
 ### 如何使用我们提供的工具
 
