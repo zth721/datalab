@@ -1,9 +1,4 @@
 /*
-Please Note that:
-1. you can define any numbers you need;
-2. if you need to use "++"/"--",we will see it as "+"/"-"
-*/
-/*
  * bitXor - x ^ y using only ~ and &
  *   Example: bitXor(4, 5) = 1
  *   Legal ops: ~ &
@@ -63,7 +58,7 @@ int byteSwap(int x, int n, int m) {
  * reverse - Reverse the bit order of a 32-bit unsigned integer.
  *   Example: reverse(0xFFFF0000) = 0x0000FFFF reverse(0x80000000)=0x1 reverse(0xA0000000)=0x5
  *   Note: You may assume that an unsigned integer is 32 bits long.
- *   Legal ops: << | & - + >> for while ! ~ (You can define unsigned in this function) 
+ *   Legal ops: << | & - + >> for while ! ~ (You can define unsigned in this function)
  *   Max ops: 30
  *   Difficulty: 3
  */
