@@ -487,7 +487,7 @@ static void usage(char* cmd) {
  **************/
 
 int main(int argc, char* argv[]) {
-    [[maybe_unused]] int errors;
+    int __attribute__((unused)) errors;
     char c;
 
     /* parse command line args */

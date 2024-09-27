@@ -8,6 +8,17 @@
 
 > 比如 .tex 和 .pdf 文件。
 
+提交时你的目录结构应该是
+
+```
+|- report
+  |- report.md
+  |- report.pdf
+  |- imgs
+    |- img1.png
+    |- img2.png
+```
+
 ## 通用报告要求
 
 我们有一些跨 lab 共通的报告要求：

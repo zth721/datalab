@@ -158,7 +158,11 @@ DataLab 本次设置为通过性实验，即测试点通过则为满分。
 
 ### 实验报告
 
-报告模版见 [`report/report.md`](report/report.md)，同时你还需要阅读 [`report/README.md`](report/README.md)。
+作为本学期的第一个实验，我们在此说明我们每个实验的报告提交要求。
+
+首先，所有实验都遵循相同的通用要求，具体见 [`report/README.md`](report/README.md)。
+
+每个实验又会提供专用的实验模板，其中包含了具体助教想要你们填写的内容，具体见 [`report/DataLab.md`](report/report.md)。
 
 ### 提交
 
