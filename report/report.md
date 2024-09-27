@@ -11,7 +11,7 @@
 
 test 截图：
 
-![image](https://github.com/user-attachments/assets/ce3d3a69-ac27-46c4-b073-44577ec7dbbb)
+![image](./image/image.png)
 
 <!-- TODO: 用一个通过的截图，本地图片，放到 imgs 文件夹下，不要用这个 github，pandoc 解析可能有问题 -->
 
