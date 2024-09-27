@@ -99,7 +99,7 @@ int leftBitCount(int x) {
  * float_i2f - Return bit-level equivalent of expression (float) x
  *   Result is returned as unsigned int, but it is to be interpreted as
  *   the bit-level representation of a single-precision floating point values.
- *   Legal ops: if else while for & | ~ + - >> << < > !
+ *   Legal ops: if else while for & | ~ + - >> << < > ! ==
  *   Max ops: 30
  *   Difficulty: 4
  */
@@ -114,7 +114,7 @@ unsigned float_i2f(int x) {
  *   they are to be interpreted as the bit-level representation of
  *   single-precision floating point values.
  *   When argument is NaN, return argument
- *   Legal ops: & >> << | if > < >= <= ! ~ else +
+ *   Legal ops: & >> << | if > < >= <= ! ~ else + ==
  *   Max ops: 30
  *   Difficulty: 4
  */
