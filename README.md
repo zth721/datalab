@@ -157,8 +157,8 @@ python3 test.py
 输出示例：
 
 ```bash
-bitXor          1/1:     PASS
-samesign        2/2:     PASS
+bitXor          1/1:     PASS    detail: Pass using 7 operations including {'~', '&'} and {'int'}.
+samesign        2/2:     PASS    detail: Pass using 8 operations including {'&&', '>>', '^', '!'} and {'if', 'int'}.
 logtwo          0/4:     FAIL    error1: Test logtwo(1[0x1]) failed. Gives 2[0x2]. Should be 0[0x0]
                                  error2: Using illegal operations: {'+', '<', 'for'}.
                                  error3: Using excessive operations, you use 14 > max ops 12.

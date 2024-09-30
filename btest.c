@@ -128,32 +128,31 @@ static int gen_float64_vals(int test_vals_low[], int test_vals_high[], int test_
 
     for (i = 0; i < test_range; i++) {
         /* Denorms around zero */
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, i);
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | i);
+        pack_store(test_vals_low, test_vals_high, &test_count, i);
+        pack_store(test_vals_low, test_vals_high, &test_count, sign | i);
 
         /* Region around norm to denorm transition */
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, smallest_norm + i);
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, smallest_norm - i);
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (smallest_norm + i));
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (smallest_norm - i));
+        pack_store(test_vals_low, test_vals_high, &test_count, smallest_norm + i);
+        pack_store(test_vals_low, test_vals_high, &test_count, smallest_norm - i);
+        pack_store(test_vals_low, test_vals_high, &test_count, sign | (smallest_norm + i));
+        pack_store(test_vals_low, test_vals_high, &test_count, sign | (smallest_norm - i));
 
         /* Region around one */
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, one + i);
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, one - i);
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (one + i));
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (one - i));
+        pack_store(test_vals_low, test_vals_high, &test_count, one + i);
+        pack_store(test_vals_low, test_vals_high, &test_count, one - i);
+        pack_store(test_vals_low, test_vals_high, &test_count, sign | (one + i));
+        pack_store(test_vals_low, test_vals_high, &test_count, sign | (one - i));
 
         /* Region below largest norm */
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, largest_norm - i);
-        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (largest_norm - i));
+        pack_store(test_vals_low, test_vals_high, &test_count, largest_norm - i);
+        pack_store(test_vals_low, test_vals_high, &test_count, sign | (largest_norm - i));
     }
 
     /* special vals */
-    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, inf);        /* inf */
-    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | inf); /* -inf */
-    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, nan);        /* nan */
-    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | nan); /* -nan */
-
+    pack_store(test_vals_low, test_vals_high, &test_count, inf);        /* inf */
+    pack_store(test_vals_low, test_vals_high, &test_count, sign | inf); /* -inf */
+    pack_store(test_vals_low, test_vals_high, &test_count, nan);        /* nan */
+    pack_store(test_vals_low, test_vals_high, &test_count, sign | nan); /* -nan */
     return test_count;
 }
 
@@ -378,7 +377,11 @@ static int test_function(test_ptr t, int arg_low, int arg_high) {
     }
 
     if (arg_low != -1 && arg_high != -1) {
-        int test_count = gen_float64_vals(arg_test_vals[arg_low], arg_test_vals[arg_high], arg_test_range[arg_low], arg_low, arg_high);
+        if (args != 2) {
+            printf("Configuration error: invalid number of args (%d) for function %s. Support only two arguments for now.\n", args, t->name);
+            exit(1);
+        }
+        int test_count = gen_float64_vals(arg_test_vals[arg_low], arg_test_vals[arg_high], TEST_RANGE, arg_low, arg_high);
         test_counts[arg_low] = test_count;
         test_counts[arg_high] = test_count;
     }
@@ -407,6 +410,21 @@ static int test_function(test_ptr t, int arg_low, int arg_high) {
      */
 
     /* Iterate over the values for first argument */
+
+    if (arg_low != -1 && arg_high != -1) {
+        for (a1 = 0; a1 < test_counts[0]; a1++) {
+            errors += test_2_arg(t->solution_funct,
+                                 t->test_funct,
+                                 arg_test_vals[0][a1],
+                                 arg_test_vals[1][a1],
+                                 t->name);
+
+            /* Stop testing if there is an error */
+            if (errors)
+                return errors;
+        }
+        return errors;
+    }
 
     for (a1 = 0; a1 < test_counts[0]; a1++) {
         if (args == 1) {
