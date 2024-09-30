@@ -117,6 +117,7 @@ true_ans = {
             "~",
             "unsigned",
             "int",
+            "unsigned int"
         ],
         "maxop": 30,
     },
@@ -153,6 +154,7 @@ true_ans = {
             "==",
             "unsigned",
             "int",
+            "unsigned int"
         ],
         "maxop": 30,
     },
@@ -176,6 +178,7 @@ true_ans = {
             "==",
             "int",
             "unsigned",
+            "unsigned int"
         ],
         "maxop": 30,
     },
@@ -199,6 +202,7 @@ true_ans = {
             "else",
             "int",
             "unsigned",
+            "unsigned int"
         ],
         "maxop": 60,
     },
@@ -223,6 +227,7 @@ true_ans = {
             "&&",
             "int",
             "unsigned",
+            "unsigned int"
         ],
         "maxop": 30,
     },
