@@ -394,7 +394,7 @@ static int run_tests() {
     double points = 0.0;
     double max_points = 0.0;
 
-    printf("Score\tRating\tErrors\tFunction\n");
+    // printf("Score\tRating\tErrors\tFunction\n");
 
     for (i = 0; test_set[i].solution_funct; i++) {
         int terrors;
@@ -415,7 +415,7 @@ static int run_tests() {
         }
     }
 
-    printf("Total points: %.0f/%.0f\n", points, max_points);
+    // printf("Total points: %.0f/%.0f\n", points, max_points);
     return errors;
 }
 

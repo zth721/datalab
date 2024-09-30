@@ -1,6 +1,7 @@
 from pycparser import c_ast, parse_file
 import subprocess
 import re
+import argparse
 
 
 class FunctionAnalyzer(c_ast.NodeVisitor):
@@ -112,7 +113,7 @@ problem_infos = {
             "~",
             "unsigned",
             "int",
-            "unsigned int"
+            "unsigned int",
         ],
         "maxop": 30,
     },
@@ -149,7 +150,7 @@ problem_infos = {
             "==",
             "unsigned",
             "int",
-            "unsigned int"
+            "unsigned int",
         ],
         "maxop": 30,
     },
@@ -173,7 +174,7 @@ problem_infos = {
             "==",
             "int",
             "unsigned",
-            "unsigned int"
+            "unsigned int",
         ],
         "maxop": 30,
     },
@@ -197,7 +198,7 @@ problem_infos = {
             "else",
             "int",
             "unsigned",
-            "unsigned int"
+            "unsigned int",
         ],
         "maxop": 60,
     },
@@ -222,7 +223,7 @@ problem_infos = {
             "&&",
             "int",
             "unsigned",
-            "unsigned int"
+            "unsigned int",
         ],
         "maxop": 30,
     },
@@ -273,10 +274,19 @@ def test_legality(ast, function):
     if len(analyzer.type_conversions) != 0:
         legality_message.append(f"Using type conversion.")
 
-    return len(legality_message) == 0, legality_message
+    pass_message = [
+        f"Pass using {len(operators)} operations including {set(operators)} and {set(analyzer.control_structures)}."
+    ]
+
+    return len(legality_message) == 0, legality_message, pass_message
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--legality_only", action="store_true")
+    parser.add_argument("--verbose", "-V", action="store_true")
+    args = parser.parse_args()
+
     try:
         subprocess.run(["make", "clean"], check=True)
         subprocess.run(["make"], check=True)
@@ -290,47 +300,58 @@ def main():
     results = {
         function_name: {
             "correctness": False,
-            "correctness_message": "",
+            "correctness_message": [],
             "legality": False,
-            "legality_message": "",
+            "legality_message": [],
+            "legality_pass_message": [],
         }
         for function_name in problem_infos.keys()
     }
 
-    with open("result.txt", "w") as f:
-        try:
-            out = subprocess.run(["./btest"], stderr=f, stdout=f, check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Error while running btest: {e}.")
-            exit(1)
-
-    with open("result.txt", "r") as rd:
-        lines = rd.readlines()
-
-    for line1, line2 in zip(lines, lines[1:] + [""]):
-        body = line1.strip() + line2.strip()
-        if "Score" in line1:  # first line
-            continue
-        if "Total points" in line1:  # last line
-            continue
-        elif "ERROR" in line1:
-            matches = re.findall(r"\b\w+\b|\b\d+\b", line1)
-            function_name = matches[2]
+    if args.legality_only:
+        for function_name in problem_infos.keys():
             results[function_name]["correctness"] = False
-            body = body.replace("ERROR: ", "")
-            body = body.replace("......", ". ")
-            results[function_name]["correctness_message"] = [body]
-        elif "Gives" in line1:
-            continue
-        else:
-            matches = re.findall(r"\b\w+\b|\b\d+\b", line1)
-            function_name = matches[-1]
-            results[function_name]["correctness"] = True
+            results[function_name]["correctness_message"] = [
+                "Correctness unknown, legality only."
+            ]
+    else:
+        with open("result.txt", "w") as f:
+            try:
+                subprocess.run(["./btest"], stdout=f, check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"Error while running btest: {e}.")
+                exit(1)
 
-    for function_name in problem_infos.keys():
-        legality, legality_message = test_legality(ast, function_name)
-        results[function_name]["legality"] = legality
-        results[function_name]["legality_message"] = legality_message
+        with open("result.txt", "r") as rd:
+            lines = rd.readlines()
+
+        for line1, line2 in zip(lines, lines[1:] + [""]):
+            body = line1.strip() + line2.strip()
+            if "Score" in line1:  # first line
+                continue
+            if "Total points" in line1:  # last line
+                continue
+            elif "ERROR" in line1:
+                matches = re.findall(r"\b\w+\b|\b\d+\b", line1)
+                function_name = matches[2]
+                results[function_name]["correctness"] = False
+                body = body.replace("ERROR: ", "")
+                body = body.replace("......", ". ")
+                results[function_name]["correctness_message"] = [body]
+            elif "Gives" in line1:
+                continue
+            else:
+                matches = re.findall(r"\b\w+\b|\b\d+\b", line1)
+                function_name = matches[-1]
+                results[function_name]["correctness"] = True
+
+        for function_name in problem_infos.keys():
+            legality, legality_message, legality_pass_message = test_legality(
+                ast, function_name
+            )
+            results[function_name]["legality"] = legality
+            results[function_name]["legality_message"] = legality_message
+            results[function_name]["legality_pass_message"] = legality_pass_message
 
     total_points = 0
     for function_name, result in results.items():
@@ -341,6 +362,9 @@ def main():
         msg_bodies = []
         if not is_pass:
             msg_bodies = result["correctness_message"] + result["legality_message"]
+        elif args.verbose:
+            msg_bodies = result["legality_pass_message"]
+
         total_points += earn_points
 
         if len(msg_bodies) == 0:
@@ -349,7 +373,10 @@ def main():
             print(f"{msg_header:<25}{msg_mid:<8}", end="")
             for i, msg_body in enumerate(msg_bodies):
                 if i == 0:
-                    print(f"error{i+1}: {msg_body}")
+                    if not is_pass:
+                        print(f"error{i+1}: {msg_body}")
+                    else:
+                        print(f"detail: {msg_body}")
                 else:
                     print(f"{' ' *33}error{i+1}: {msg_body}")
 

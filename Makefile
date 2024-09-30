@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O -Wall -m32
+CFLAGS = -O0 -Wall -std=gnu99
 LIBS = -lm
 
 all: btest fshow ishow
