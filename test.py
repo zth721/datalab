@@ -284,9 +284,8 @@ def test_legality(ast, function):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--legality_only", action="store_true")
-    # parser.add_argument("--verbose", "-V", action="store_true")
+    parser.add_argument("--verbose", "-V", action="store_true")
     args = parser.parse_args()
-    args.verbose = True
 
     try:
         subprocess.run(["make", "clean"], check=True)
