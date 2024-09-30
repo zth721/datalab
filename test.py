@@ -112,6 +112,7 @@ problem_infos = {
             "~",
             "unsigned",
             "int",
+            "unsigned int"
         ],
         "maxop": 30,
     },
@@ -148,6 +149,7 @@ problem_infos = {
             "==",
             "unsigned",
             "int",
+            "unsigned int"
         ],
         "maxop": 30,
     },
@@ -171,6 +173,7 @@ problem_infos = {
             "==",
             "int",
             "unsigned",
+            "unsigned int"
         ],
         "maxop": 30,
     },
@@ -194,6 +197,7 @@ problem_infos = {
             "else",
             "int",
             "unsigned",
+            "unsigned int"
         ],
         "maxop": 60,
     },
@@ -218,6 +222,7 @@ problem_infos = {
             "&&",
             "int",
             "unsigned",
+            "unsigned int"
         ],
         "maxop": 30,
     },
