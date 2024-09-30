@@ -97,6 +97,66 @@ static int random_val(int min, int max) {
     return result;
 }
 
+void pack_store(int test_vals_low[], int test_vals_high[], int* test_count, int64_t value) {
+    test_vals_low[*test_count] = value & 0xFFFFFFFF;
+    test_vals_high[*test_count] = (value >> 32) & 0xFFFFFFFF;
+    (*test_count)++;
+}
+
+/*
+ * gen_float64_vals - 生成 64 位 float 的测试数据，分别填充到 test_vals_low 和 test_vals_high 中
+ */
+static int gen_float64_vals(int test_vals_low[], int test_vals_high[], int test_range, int arg_low, int arg_high) {
+    int64_t i;
+    int test_count = 0;
+    if (has_arg[arg_low] && has_arg[arg_high]) {
+        test_vals_low[0] = argval[arg_low];
+        test_vals_high[0] = argval[arg_high];
+        return 1;
+    } else if (has_arg[arg_low] || has_arg[arg_high]) {
+        printf("Configuration error: You can't set only one of the two float arguments, as they are a pair.\n");
+        exit(1);
+    }
+
+    int64_t smallest_norm = 0x0010000000000000;
+    int64_t one = 0x3ff0000000000000;
+    int64_t largest_norm = 0x7fefffffffffffff;
+
+    int64_t inf = 0x7ff0000000000000;
+    int64_t nan = 0x7ff8000000000000;
+    int64_t sign = 0x8000000000000000;
+
+    for (i = 0; i < test_range; i++) {
+        /* Denorms around zero */
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, i);
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | i);
+
+        /* Region around norm to denorm transition */
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, smallest_norm + i);
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, smallest_norm - i);
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (smallest_norm + i));
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (smallest_norm - i));
+
+        /* Region around one */
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, one + i);
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, one - i);
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (one + i));
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (one - i));
+
+        /* Region below largest norm */
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, largest_norm - i);
+        pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | (largest_norm - i));
+    }
+
+    /* special vals */
+    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, inf);        /* inf */
+    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | inf); /* -inf */
+    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, nan);        /* nan */
+    pack_store(&test_vals_low[test_count], &test_vals_high[test_count], &test_count, sign | nan); /* -nan */
+
+    return test_count;
+}
+
 /*
  * gen_vals - Generate the integer values we'll use to test a function
  */
@@ -267,7 +327,7 @@ static int test_3_arg(funct_t f, funct_t ft, int arg1, int arg2, int arg3, char*
 /*
  * test_function - Test a function.  Return number of errors
  */
-static int test_function(test_ptr t) {
+static int test_function(test_ptr t, int arg_low, int arg_high) {
     int test_counts[3];          /* number of test values for each arg */
     int args = t->args;          /* number of function arguments */
     int arg_test_range[3] = {0}; /* test range for each argument */
@@ -308,11 +368,19 @@ static int test_function(test_ptr t) {
 
     /* Create a test set for each argument */
     for (i = 0; i < args; i++) {
+        if (i == arg_low || i == arg_high)
+            continue;
         test_counts[i] = gen_vals(arg_test_vals[i],
                                   t->arg_ranges[i][0], /* min */
                                   t->arg_ranges[i][1], /* max */
                                   arg_test_range[i],
                                   i);
+    }
+
+    if (arg_low != -1 && arg_high != -1) {
+        int test_count = gen_float64_vals(arg_test_vals[arg_low], arg_test_vals[arg_high], arg_test_range[arg_low], arg_low, arg_high);
+        test_counts[arg_low] = test_count;
+        test_counts[arg_high] = test_count;
     }
 
     /* Handle timeouts in the test code */
@@ -402,7 +470,11 @@ static int run_tests() {
         double tpoints;
         if (!test_fname || strcmp(test_set[i].name, test_fname) == 0) {
             int rating = global_rating ? global_rating : test_set[i].rating;
-            terrors = test_function(&test_set[i]);
+            if (strcmp(test_set[i].name, "float64_f2i") == 0) {  // special case for float64_f2i
+                terrors = test_function(&test_set[i], 0, 1);
+            } else {
+                terrors = test_function(&test_set[i], -1, -1);
+            }
             errors += terrors;
             tscore = terrors == 0 ? 1.0 : 0.0;
             tpoints = rating * tscore;
