@@ -32,15 +32,17 @@ sudo apt-get remove gcc g++
 
 --------
 
-Python 编译环境，我们演示 Virtualenv 下的配置方法，如果你使用 Conda 可以自行配置类似的环境出来
+Python 编译环境已弃用，你不需要执行任何指令来配置，如果你第一次读到这个文档，请忽略这一部分。
 
-```bash
-sudo apt-get update
-sudo apt-get install python3 python3-pip python3-venv
-python3 -m venv venv # 如果你在我们提供的服务器上进行本实验，这一步请从这里开始
-. venv/bin/activate
-pip install pycparser -i https://mirrors.aliyun.com/pypi/simple/
-```
+> Python 编译环境，我们演示 Virtualenv 下的配置方法，如果你使用 Conda 可以自行配置类似的环境出来
+> 
+> ```bash
+> sudo apt-get update
+> sudo apt-get install python3 python3-pip python3-venv
+> python3 -m venv venv # 如果你在我们提供的服务器上进行本实验，这一步请从这里开始
+> . venv/bin/activate
+> pip install pycparser -i https://mirrors.aliyun.com/pypi/simple/
+> ```
 
 --------
 
