@@ -139,8 +139,36 @@ int bitAnd(int x, int y) {
 python3 test.py
 ```
 
-我们提供了一个 `test.py` 脚本，当你完成实验时可以在你自己机器上直接运行该指令。如果出现最大操作数、合规性错误会直接显示错误信息到屏幕上，而正确性信息则会被记录在 `result.txt` 文件中。
-需要注意，只有当你 `bits.c` 文件编译没有问题（即不存在语法问题）时，`test.py` 才会显示你答题的相关信息。
+我们提供了一个 `test.py` 脚本，它完成以下判断
+
+- 尝试编译你的代码
+- 测试正确性，即是否能返回函数正确的结果
+- 测试合规性，即是否满足题目对符号数等的要求
+
+返回结果示例：
+
+```bash
+rm -f *.o btest fshow ishow *~ yacctab.py lextab.py
+gcc -O -Wall -m32 -lm -o btest bits.c btest.c decl.c tests.c
+gcc -O -Wall -m32 -o fshow fshow.c
+gcc -O -Wall -m32 -o ishow ishow.c
+Make success.
+bitXor          1/1:     PASS
+samesign        0/2:     FAIL    error1: Test samesign(-2147483648[0x80000000],-2147483648[0x80000000]) failed. Gives 2[0x2]. Should be 1[0x1]
+                                 error2: Using illegal operations: {'+', '<', 'for'}.
+                                 error3: Using excessive operations, you use 14 > max ops 12.
+                                 error4: Using type conversion.
+logtwo          0/4:     FAIL    error1: Test logtwo(1[0x1]) failed. Gives 2[0x2]. Should be 0[0x0]
+byteSwap        0/4:     FAIL    error1: Test byteSwap(-2147483648[0x80000000],0[0x0],0[0x0]) failed. Gives 2[0x2]. Should be -2147483648[0x80000000]
+reverse         0/3:     FAIL    error1: Test reverse(-2147483648[0x80000000]) failed. Gives 2[0x2]. Should be 1[0x1]
+logicalShift    0/3:     FAIL    error1: Test logicalShift(-2147483648[0x80000000],0[0x0]) failed. Gives 2[0x2]. Should be -2147483648[0x80000000]
+leftBitCount    0/4:     FAIL    error1: Test leftBitCount(-2147483648[0x80000000]) failed. Gives 2[0x2]. Should be 1[0x1]
+float_i2f       0/4:     FAIL    error1: Test float_i2f(0[0x0]) failed. Gives 2[0x2]. Should be 0[0x0]
+floatScale2     0/4:     FAIL    error1: Test floatScale2(-2147483648[0x80000000]) failed. Gives 2[0x2]. Should be -2147483648[0x80000000]
+float64_f2i     0/3:     FAIL    error1: Test float64_f2i(-2147483648[0x80000000]) failed. Gives 2[0x2]. Should be 0[0x0]
+floatPower2     0/4:     FAIL    error1: Test floatPower2(-2147483648[0x80000000]) failed. Gives 2[0x2]. Should be 0[0x0]
+Total points: 1
+```
 
 ### 如何使用我们提供的工具
 
