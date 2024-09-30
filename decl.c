@@ -9,10 +9,11 @@
 #include "bits.h"
 
 test_rec test_set[] = {
+
     {"bitXor", (funct_t)bitXor, (funct_t)test_bitXor, 2, "$", 7, 1, {{TMin, TMax}, {TMin, TMax}, {TMin, TMax}}},
     {"byteSwap", (funct_t)byteSwap, (funct_t)test_byteSwap, 3, "$", 17, 2, {{TMin, TMax}, {0, 3}, {0, 3}}},
     {"logicalShift", (funct_t)logicalShift, (funct_t)test_logicalShift, 2, "$", 20, 3, {{TMin, TMax}, {0, 31}, {TMin, TMax}}},
-    {"float_i2f", (funct_t)float_i2f, (funct_t)test_float_i2f, 1, "$", 30, 4, {{1, 1}, {1, 1}, {1, 1}}},
+    {"float_i2f", (funct_t)float_i2f, (funct_t)test_float_i2f, 1, "$", 30, 4, {{TMin, TMax}, {TMin, TMax}, {TMin, TMax}}},
     {"leftBitCount", (funct_t)leftBitCount, (funct_t)test_leftBitCount, 1, "$", 40, 4, {{TMin, TMax}, {TMin, TMax}, {TMin, TMax}}},
     {"floatPower2", (funct_t)floatPower2, (funct_t)test_floatPower2, 1, "$", 30, 4, {{TMin, TMax}, {TMin, TMax}, {TMin, TMax}}},
     {"floatScale2", (funct_t)floatScale2, (funct_t)test_floatScale2, 1, "$", 30, 4, {{TMin, TMax}, {TMin, TMax}, {TMin, TMax}}},
