@@ -65,12 +65,17 @@ make
 ### Quick Start
 
 ```bash
-git clone git@github.com:RUCICS/datalab-panjd123.git
+# 在我们的服务器上，不需要执行这一行
+sudo apt-get update && sudo apt-get install build-essential gcc-multilib
+
 # 其中 panjd123 改成你的用户名
+git clone git@github.com:RUCICS/datalab-panjd123.git
+
 cd datalab-panjd123
+
 make
 python3 test.py
-# 然后你应该看到 0 分输出
+# 然后你应该看到最后一行输出 Total Points:0 的字样
 ```
 
 ## 实验简述
