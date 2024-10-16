@@ -340,6 +340,8 @@ def main():
                 results[function_name]["correctness_message"] = [body]
             elif "Gives" in line1:
                 continue
+            elif "Timed out" in line1:
+                continue
             else:
                 matches = re.findall(r"\b\w+\b|\b\d+\b", line1)
                 function_name = matches[-1]
