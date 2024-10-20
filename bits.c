@@ -19,7 +19,7 @@
  *   Difficulty: 1
  */
 int bitXor(int x, int y) {
-    return 2;
+     return (~(x&y))&(~(~x&~y));
 }
 
 /*
@@ -39,7 +39,15 @@ int bitXor(int x, int y) {
  *   1 if x and y have the same sign , 0 otherwise.
  */
 int samesign(int x, int y) {
-    return 2;
+    int sign_x = x >> 31;  
+    int sign_y = y >> 31;  
+    int is_x_zero = !(x);  
+    int is_y_zero = !(y);  
+    if (is_x_zero || is_y_zero) {  
+        return is_x_zero && is_y_zero;  
+    }  
+    return !(sign_x ^ sign_y);  
+
 }
 
 /*
@@ -51,9 +59,34 @@ int samesign(int x, int y) {
  *   Max ops: 25
  *   Difficulty: 4
  */
-int logtwo(int v) {
-    return 2;
+int logtwo(int v) {  
+    int result = 0;  
+    // Check if v is greater than or equal to each power of 2 (1, 2, 4, 8, 16, 32, ...)  
+    if (v >> 16) {   
+        result = 16;   
+        v >>= 16;   
+    }  
+    if (v >> 8) {   
+        result += 8;   
+        v >>= 8;   
+    }  
+    if (v >> 4) {   
+        result += 4;   
+        v >>= 4;   
+    }  
+    if (v >> 2) {   
+        result += 2;   
+        v >>= 2;   
+    }  
+    if (v >> 1) {   
+        result += 1;   
+        v >>= 1;   
+    }  
+    // At this point, v should be 1, and result holds the log base 2 of the original v  
+    return result;  
 }
+
+
 
 /*
  *  byteSwap - swaps the nth byte and the mth byte
@@ -64,8 +97,14 @@ int logtwo(int v) {
  *    Max ops: 17
  *    Difficulty: 2
  */
-int byteSwap(int x, int n, int m) {
-    return 2;
+int byteSwap(int x, int n, int m) {  
+    int mask_n = 0xFF << (n << 3); 
+    int mask_m = 0xFF << (m << 3); 
+    int nth_byte = (x & mask_n) >> (n << 3);  
+    int mth_byte = (x & mask_m) >> (m << 3);   
+    x = x & ~mask_n & ~mask_m;    
+    x = x | (nth_byte << (m << 3)) | (mth_byte << (n << 3));  
+    return x;  
 }
 
 /*
@@ -76,8 +115,13 @@ int byteSwap(int x, int n, int m) {
  *   Max ops: 30
  *   Difficulty: 3
  */
-unsigned reverse(unsigned v) {
-    return 2;
+unsigned reverse(unsigned x) {  
+    x = (x & 0x55555555) << 1 | (x & 0xAAAAAAAA) >> 1;  
+    x = (x & 0x33333333) << 2 | (x & 0xCCCCCCCC) >> 2;  
+    x = (x & 0x0F0F0F0F) << 4 | (x & 0xF0F0F0F0) >> 4;  
+    x = (x & 0x00FF00FF) << 8 | (x & 0xFF00FF00) >> 8;  
+    x = (x & 0x0000FFFF) << 16 | (x & 0xFFFF0000) >> 16;  
+    return x;  
 }
 
 /*
@@ -89,8 +133,9 @@ unsigned reverse(unsigned v) {
  *   Difficulty: 3
  */
 int logicalShift(int x, int n) {
-    return 2;
-}
+    x>>=n;
+    return x&(~(1<<31>>n<<1));
+    }
 
 /*
  * leftBitCount - returns count of number of consective 1's in left-hand (most) end of word.
@@ -100,10 +145,36 @@ int logicalShift(int x, int n) {
  *   Max ops: 50
  *   Difficulty: 4
  */
-int leftBitCount(int x) {
-    return 2;
-}
+int leftBitCount(int x) {  
+    x = ~x; 
+    int result = 0;  
+    int z; 
+    int num; 
+   
+    z = !(x >> 16);   
+    num = z << 4;
+    result = num; 
+    x <<= num; 
+  
+   
+    z = !(x >> 24); 
+    num = z << 3; 
+    result += num;   
+    x <<= num;
 
+    z = !(x >> 28); 
+    num = z << 2;  
+    result += num; 
+    x <<= num;
+
+    z = !(x >> 30);
+    num = z << 1; 
+    result += num; 
+    x <<= num; 
+  
+    result += !(x >> 31) + !(x >> 30);
+    return result;  
+}
 /*
  * float_i2f - Return bit-level equivalent of expression (float) x
  *   Result is returned as unsigned int, but it is to be interpreted as
@@ -112,9 +183,24 @@ int leftBitCount(int x) {
  *   Max ops: 30
  *   Difficulty: 4
  */
-unsigned float_i2f(int x) {
-    return 2;
+unsigned float_i2f(int x) {  
+    unsigned exponent = 127,sign;
+    if (x == 0) {  
+        return 0;  
+    }  
+    if (x < 0) {  
+        sign = 1;  
+        x = -x;  
+    }  
+    unsigned msb = 31;  
+    while ((x & (1 << msb)) == 0) {  
+        msb--;  
+    }  
+    x <<= (31 - msb);   
+    unsigned mantissa = (x >> 9) & 0x7FFFFF; 
+    return (sign << 31) | (exponent << 23) | mantissa;  
 }
+
 
 /*
  * floatScale2 - Return bit-level equivalent of expression 2*f for
@@ -127,8 +213,26 @@ unsigned float_i2f(int x) {
  *   Max ops: 30
  *   Difficulty: 4
  */
-unsigned floatScale2(unsigned uf) {
-    return 2;
+unsigned floatScale2(unsigned uf) {  
+    unsigned sign = uf & 0x80000000;  
+    unsigned exponent = (uf & 0x7F800000) >> 23;  
+    unsigned fraction = uf & 0x007FFFFF;  
+    if (exponent == 0xFF) {  
+        return uf;  
+    }  
+    if (exponent == 0) {  
+        fraction <<= 1;  
+        if (fraction & 0x00800000) {  
+            exponent++;  
+            fraction &= 0x007FFFFF; 
+        }  
+    } else {  
+        exponent++;  
+        if (exponent == 0xFF) {  
+            return sign | 0x7F800000; 
+        }  
+    }  
+    return sign | (exponent << 23) | fraction;  
 }
 
 /*
@@ -144,10 +248,40 @@ unsigned floatScale2(unsigned uf) {
  *   Max ops: 60
  *   Difficulty: 3
  */
-int float64_f2i(unsigned uf1, unsigned uf2) {
-    return 2;
+int float64_f2i(unsigned uf1, unsigned uf2) {  
+    unsigned sign = (uf2 >> 31) & 0x1;  
+    unsigned exponent = (uf2 >> 20) & 0x7FF;  
+    int real_exponent = exponent - 1023;  
+    int fraction;  
+    if (real_exponent <= 20) {  
+        fraction = (uf2 & 0x000FFFFF) | 0x00100000; 
+    } else {  
+        fraction = ((uf2 & 0x000FFFFF) << (real_exponent - 20 + 3)) |  
+                   ((uf1 & 0x000007FF) >> (20 - (real_exponent - 20))) |  
+                   0x00100000; 
+    }  
+    if (exponent < 1023) {  
+        return 0;  
+    } 
+    if (real_exponent == -1023) {  
+        return sign ? -1 : 1;  
+    }  
+    if (real_exponent > 31) {  
+        return 0x80000000;   
+    } 
+    fraction <<= (real_exponent < 0 ? 0 : real_exponent);  
+    if (sign) {  
+        fraction = -fraction;  
+    }  
+    if (fraction < -2147483648) { 
+        return 0x80000000;  
+    }  
+    if (fraction > 2147483647) { 
+        return 0x7FFFFFFF; 
+    }  
+  
+    return fraction;  
 }
-
 /*
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
  *   (2.0 raised to the power x) for any 32-bit integer x.
@@ -161,6 +295,15 @@ int float64_f2i(unsigned uf1, unsigned uf2) {
  *   Max ops: 30
  *   Difficulty: 4
  */
-unsigned floatPower2(int x) {
-    return 2;
-}
+unsigned floatPower2(int x) {  
+    const int bias = 127;  
+    unsigned exponent = 0;  
+    if (x < -149) {  
+        return 0; 
+    }  
+    if (x > 127) {  
+        return 0x7F800000;   
+    }  
+    exponent = x + bias;  
+    return (exponent << 23);  
+}  
