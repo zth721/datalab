@@ -19,7 +19,7 @@
  *   Difficulty: 1
  */
 int bitXor(int x, int y) {
-    return 2;
+    return ~(~x & ~y) & ~(x & y);
 }
 
 /*
@@ -39,7 +39,15 @@ int bitXor(int x, int y) {
  *   1 if x and y have the same sign , 0 otherwise.
  */
 int samesign(int x, int y) {
-    return 2;
+    // 提取x和y的符号位，右移31位使得符号位移动到最低位。
+    // 对于负数，这将产生全1（即-1），对于非负数，这将产生0。
+    int signX = x >> 31;
+    int signY = y >> 31;
+
+    // 利用异或(^)来检查两个符号是否不同。如果signX和signY相同（都是0或都是-1），则结果应为0。
+    // 如果它们不同（一个是-1另一个是0），则结果不为0。
+    // 使用逻辑非(!)将结果转换为0或1的形式。
+    return !(signX ^ signY);
 }
 
 /*
@@ -52,7 +60,20 @@ int samesign(int x, int y) {
  *   Difficulty: 4
  */
 int logtwo(int v) {
-    return 2;
+    int pos = 0;
+
+    // Check if any of the top 16 bits are set
+    if (v > 0x0000FFFF) { v >>= 16; pos += 16; }
+    // Check if any of the top 8 bits of the remaining are set
+    if (v > 0x000000FF) { v >>= 8; pos += 8; }
+    // Check if any of the top 4 bits of the remaining are set
+    if (v > 0x0000000F) { v >>= 4; pos += 4; }
+    // Check if any of the top 2 bits of the remaining are set
+    if (v > 0x00000003) { v >>= 2; pos += 2; }
+    // Check if the top bit of the remaining is set
+    if (v > 0x00000001) { pos += 1; }
+
+    return pos;
 }
 
 /*
